@@ -1,0 +1,346 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+ * 暗色模式：class 策略（在 <html> 上切换 .dark，见 index.html 内联脚本）
+ * ------------------------------------------------------------------ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+ * 设计令牌（Design Tokens）
+ * ----------------------------------------------------------------
+ * 视觉语言：现代 · 简约 · 轻巧灵动（面向开发 / 编程教学站点）
+ * - 中性底：浅灰画布（canvas）+ 深色墨字（ink），大量留白
+ * - 主色：靛紫（violet），现代产品级配色，克制使用
+ * - 强调：暖琥珀（amber），用于要点/高亮（高亮笔隐喻）
+ * - 暗色模式：中性石板色（night），柔和不刺眼
+ * 修改这里的值即可整体换肤。更多说明见 docs/DESIGN.md
+ * ------------------------------------------------------------------ */
+@theme {
+  /* 字体：西文标题用 Manrope（现代无衬线），中文由思源黑体承接 */
+  --font-sans:
+    "Noto Sans SC Variable", "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  --font-display:
+    "Manrope Variable", "Noto Sans SC Variable", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-mono:
+    "JetBrains Mono Variable", "Noto Sans SC Variable", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", ui-monospace, "SFMono-Regular",
+    Menlo, Consolas, monospace;
+
+  /* ---- 画布与墨：亮色模式（浅灰） ---- */
+  --color-canvas: #f7f8fa; /* 页面底色 */
+  --color-canvas-2: #eef0f5; /* 交替区块底色 */
+  --color-surface: #ffffff; /* 卡片/面板 */
+  --color-surface-2: #f8f9fb; /* 次级面板 */
+  --color-ink: #191b21; /* 主文字 */
+  --color-ink-soft: #525864; /* 次级文字 */
+  --color-ink-faint: #7c8391; /* 弱化文字（仅用于大号/装饰） */
+  --color-line: #e5e7ec; /* 分隔线/描边 */
+  --color-line-strong: #ced3dc;
+
+  /* ---- 夜：暗色模式（中性石板） ---- */
+  --color-night: #0f1116;
+  --color-night-2: #0b0d11;
+  --color-night-surface: #171a20;
+  --color-night-surface-2: #1e222b;
+  --color-night-ink: #e6e9f0;
+  --color-night-soft: #a9b0bf;
+  --color-night-faint: #707787;
+  --color-night-line: #272c36;
+  --color-night-line-strong: #343b47;
+
+  /* ---- 主色：靛紫（violet） ---- */
+  --color-primary-50: #f1f0fe;
+  --color-primary-100: #e5e2fd;
+  --color-primary-200: #ccc7fa;
+  --color-primary-300: #aba2f4;
+  --color-primary-400: #8678ec;
+  --color-primary-500: #6556e0;
+  --color-primary-600: #5041d2;
+  --color-primary-700: #4436b0;
+  --color-primary-800: #382e8f;
+  --color-primary-900: #2f2873;
+  --color-primary: #5041d2;
+
+  /* ---- 强调色：暖琥珀（高亮笔隐喻，用于要点/强调） ---- */
+  --color-amber-100: #fdf3dc;
+  --color-amber-200: #fbe6b8;
+  --color-amber-300: #f5d189;
+  --color-amber-400: #e9b84f;
+  --color-amber-500: #d39d30;
+  --color-amber-600: #a97c1f;
+
+  /* ---- 语义色 ---- */
+  --color-success: #16803c;
+  --color-success-soft: #e6f5ec;
+  --color-danger: #d6453d;
+  --color-danger-soft: #fceae8;
+  --color-warning: #b45309;
+  --color-warning-soft: #fbf0e1;
+  --color-info: #0369a1;
+  --color-info-soft: #e3f1f9;
+
+  /* ---- 圆角体系：柔和但不夸张 ---- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+
+  /* ---- 阴影：轻柔层次 ---- */
+  --shadow-card:
+    0 1px 2px rgb(25 27 33 / 0.04), 0 2px 8px -2px rgb(25 27 33 / 0.06);
+  --shadow-lift:
+    0 4px 12px -4px rgb(25 27 33 / 0.08), 0 12px 28px -8px rgb(25 27 33 / 0.1);
+  --shadow-pop:
+    0 8px 24px -6px rgb(25 27 33 / 0.12), 0 24px 48px -12px rgb(25 27 33 / 0.16);
+
+  /* ---- 动效 ---- */
+  --animate-fade-in: fade-in 0.3s ease-out both;
+  --animate-rise-in: rise-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-scale-in: scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-toast-in: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @keyframes toast-in {
+    from {
+      opacity: 0;
+      transform: translateX(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+ * 基础层
+ * ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    line-height: 1.7;
+  }
+
+  .dark body {
+    background-color: var(--color-night);
+    color: var(--color-night-ink);
+  }
+
+  ::selection {
+    background-color: var(--color-primary-200);
+    color: var(--color-primary-900);
+  }
+  .dark ::selection {
+    background-color: var(--color-primary-800);
+    color: var(--color-primary-100);
+  }
+
+  /* 可见的键盘焦点：模板统一使用主色描边 */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* 细滚动条 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  .dark * {
+    scrollbar-color: var(--color-night-line-strong) transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+ * 组件层：少量跨页面复用的复合类
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* 页面内容宽度容器 */
+  .wrap {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 1.75rem;
+    }
+  }
+  @media (min-width: 1024px) {
+    .wrap {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* 正文中的内联链接 */
+  .link {
+    color: var(--color-primary-600);
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary-300);
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+    transition: color 0.15s ease;
+  }
+  .link:hover {
+    color: var(--color-primary-800);
+    text-decoration-color: var(--color-primary-500);
+  }
+  .dark .link {
+    color: var(--color-primary-300);
+    text-decoration-color: var(--color-primary-700);
+  }
+  .dark .link:hover {
+    color: var(--color-primary-200);
+  }
+
+  /* 标题中的西文使用 Manrope */
+  .font-display {
+    font-optical-sizing: auto;
+  }
+
+  /* 学习助手的 Markdown：保持紧凑阅读节奏，同时让代码和引用可扫描。 */
+  .study-markdown > :first-child {
+    margin-top: 0;
+  }
+  .study-markdown > :last-child {
+    margin-bottom: 0;
+  }
+  .study-markdown p,
+  .study-markdown ul,
+  .study-markdown ol,
+  .study-markdown blockquote,
+  .study-markdown pre,
+  .study-markdown table {
+    margin-block: 0.65rem;
+  }
+  .study-markdown h1,
+  .study-markdown h2,
+  .study-markdown h3 {
+    margin-block: 0.9rem 0.45rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+  .study-markdown h1 {
+    font-size: 1.15rem;
+  }
+  .study-markdown h2 {
+    font-size: 1.05rem;
+  }
+  .study-markdown h3 {
+    font-size: 0.98rem;
+  }
+  .study-markdown ul,
+  .study-markdown ol {
+    padding-left: 1.3rem;
+  }
+  .study-markdown ul {
+    list-style: disc;
+  }
+  .study-markdown ol {
+    list-style: decimal;
+  }
+  .study-markdown li + li {
+    margin-top: 0.25rem;
+  }
+  .study-markdown a {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .dark .study-markdown a {
+    color: var(--color-primary-300);
+  }
+  .study-markdown blockquote {
+    border-left: 2px solid var(--color-amber-400);
+    padding-left: 0.75rem;
+    color: var(--color-ink-soft);
+  }
+  .dark .study-markdown blockquote {
+    border-left-color: var(--color-amber-500);
+    color: var(--color-night-soft);
+  }
+  .study-markdown code {
+    border-radius: 0.25rem;
+    background: var(--color-canvas-2);
+    padding: 0.12rem 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+  }
+  .dark .study-markdown code {
+    background: var(--color-night);
+  }
+  .study-markdown pre {
+    overflow-x: auto;
+    border: 1px solid var(--color-line);
+    border-radius: 0.375rem;
+    background: var(--color-night);
+    padding: 0.75rem;
+    color: var(--color-night-ink);
+  }
+  .study-markdown pre code {
+    background: transparent;
+    padding: 0;
+    font-size: 0.78rem;
+  }
+  .study-markdown hr {
+    margin-block: 0.9rem;
+    border-color: var(--color-line);
+  }
+  .dark .study-markdown hr {
+    border-color: var(--color-night-line);
+  }
+}
