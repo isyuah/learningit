@@ -46,9 +46,17 @@ export const orderedCourses: Course[] = [...courses].sort(
   (a, b) => courseSortValue(a, "default") - courseSortValue(b, "default"),
 );
 
-/** 全部课时内容：slug → Lesson（大纲有内容无的课时不在此列） */
+/**
+ * 全部课时内容：文件名 slug → Lesson（大纲有内容无的课时不在此列）。
+ * 键取自课时文件名（<course>/lessons/<slug>.ts 的 <slug>），这是课时真实
+ * slug 的权威来源；lesson 对象内的 slug 字段只是向后兼容的冗余声明，
+ * 缺失不应影响查找（见 PLATFORM-CONTRACT §4）。
+ */
 export const lessons: Record<string, Lesson> = Object.fromEntries(
-  Object.values(lessonModules).map((m) => [m.lesson.slug, m.lesson]),
+  Object.entries(lessonModules).map(([path, m]) => {
+    const fileSlug = path.slice(path.lastIndexOf("/") + 1, -".ts".length);
+    return [fileSlug, m.lesson];
+  }),
 );
 
 /** 便捷查询：按 slug 取课程 */

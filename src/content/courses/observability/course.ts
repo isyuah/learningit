@@ -18,9 +18,9 @@ export const course: Course = {
   title: "可观测性系统学习",
   tagline: "从三支柱心智模型到 OpenTelemetry 工程实践",
   description:
-    "面向已有后端开发经验、想体系化掌握监控与追踪的学习者。课程不是工具清单，而是建立一套统一的思维框架：先讲清楚「可观测性」到底解决什么问题、为什么传统监控不够，再以 OpenTelemetry 的统一数据模型为骨架，把日志、指标、追踪三个信号及其关系讲透，最后落到 Prometheus + Grafana + Tempo + Loki 这一套以 OTel 为前端的现代观测栈的真实部署与排障。\n\n全程围绕一个 Go 编写的「shop」示例服务（HTTP + SQLite）展开：从手动埋点到 OTel 自动/手动埋点、从拉取采集到 OTLP 推送、从单信号到跨信号关联，最后用一次真实的线上故障排查把所有能力串成一条工程主线。配套可运行的示例工程位于仓库之外的 E:/Proj/Learn/observability-demo。",
+    "面向已有后端开发经验、想体系化掌握监控与追踪的学习者。课程不是工具清单，而是建立一套统一的思维框架：先讲清楚「可观测性」到底解决什么问题、为什么传统监控不够，再以 OpenTelemetry 的统一数据模型为骨架，把日志、指标、追踪三个信号及其关系讲透，最后落到 Prometheus + Grafana + Tempo + Loki 这一套以 OTel 为前端的现代观测栈的真实部署与排障。末章「生态全景」以导览方式带你看清主线之外的拼图——Alloy 等采集器家族、Thanos/K8s 等扩展形态、性能剖析与 RUM 等前沿信号——知道它们的存在与定位，需要时能自行深入。\n\n全程围绕一个 Go 编写的「shop」示例服务（HTTP + SQLite）展开：从手动埋点到 OTel 自动/手动埋点、从拉取采集到 OTLP 推送、从单信号到跨信号关联，最后用一次真实的线上故障排查把所有能力串成一条工程主线。配套可运行的示例工程位于仓库之外的 E:/Proj/Learn/observability-demo。",
   level: "intermediate",
-  hours: 12,
+  hours: 13,
   learners: 0,
   coverIndex: "12",
   coverColor: "amber",
@@ -33,6 +33,7 @@ export const course: Course = {
     "理解 OTLP 与 Collector 在采集拓扑中的角色，能部署一套本地可运行的全栈观测环境",
     "掌握从指标告警到追踪定位、再到日志取证的标准排障工作流",
     "理解 OpenMetrics、Exemplar、事件日志、SLO 等进阶概念及其在工程中的位置",
+    "建立可观测性生态全景图：采集器、存储扩展、K8s 观测、性能剖析与 RUM 各自的定位",
   ],
   chapters: [
     {
@@ -91,6 +92,16 @@ export const course: Course = {
       lessons: [
         { slug: "obs-slo", title: "SLO 与错误预算", minutes: 26, kind: "reading" },
         { slug: "obs-troubleshooting", title: "综合实战：用观测定位线上故障", minutes: 45, kind: "exercise" },
+      ],
+    },
+    {
+      id: "ecosystem",
+      title: "生态全景",
+      intro: "主线之外的广阔拼图：采集器家族、存储扩展与 Kubernetes 观测、性能剖析与前沿信号。只建立认知地图，不深入实现。",
+      lessons: [
+        { slug: "obs-ecosystem-collection", title: "采集层扩展：Alloy、Promtail 与 eBPF", minutes: 24, kind: "reading" },
+        { slug: "obs-ecosystem-storage", title: "存储扩展：Thanos、Remote Write 与 K8s 观测", minutes: 26, kind: "reading" },
+        { slug: "obs-ecosystem-frontier", title: "前沿信号：性能剖析、RUM 与更多", minutes: 22, kind: "reading" },
       ],
     },
   ],
