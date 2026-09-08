@@ -182,8 +182,10 @@ push({ tone: "success", title: "已保存", description: "进度已记录" });
 
 - `**加粗**`、`*斜体*`、`~~删除线~~`、`` `行内代码` ``、链接
   （外链 `[x](https://…)`、站内 `[x](/courses/…)`、尖括号自动链接）。
-- `[文字](glossary:key)` = **术语引用**：虚线下划线样式；悬停/聚焦弹出卡片
-  （词条 `summary`），点击直达 `/courses/<slug>/glossary#<key>`；移动端点击直接跳转。
+- `[文字](glossary:key)` = **术语引用**：虚线下划线样式；悬停/键盘聚焦弹出简介卡片。
+  点击（移动端 tap 同样）**不跳转**，改为固定/收起卡片——先读简介，要完整条目点
+  卡片内「查看完整条目 →」；Esc、滚动、点卡片外可关闭；Ctrl/⌘+点击直接开新标签
+  到 `/courses/<slug>/glossary#<key>`。
 - 词条数据 = 课程目录下 `glossary.ts`（`glossary: GlossaryEntry[]`，
   `key/term/summary/detail`），示例与字段表见 `src/content/courses/gorm/glossary.ts`。
 - 术语页路由 `/courses/:courseSlug/glossary`：词条按首次被正文引用的课时排序，

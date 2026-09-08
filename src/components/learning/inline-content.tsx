@@ -10,7 +10,7 @@
  *   http(s)/mailto → 外部链接（新窗口）
  *   其余          → 仅渲染文字（validate 会拦下非白名单 scheme）
  * ================================================================== */
-import { useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import type { ReactNode } from "react";
@@ -133,7 +133,10 @@ function TermAnchor({
   entry: GlossaryEntry;
   children: ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  // hover 态：鼠标悬停/键盘聚焦展开；pinned 态：点击（含移动端 tap）后固定展开
+  const [hover, setHover] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const open = hover || pinned;
   const [box, setBox] = useState<{ top: number; left: number } | null>(null);
   const anchorRef = useRef<HTMLAnchorElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -143,10 +146,7 @@ function TermAnchor({
 
   const closeSoon = () => {
     window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => {
-      setOpen(false);
-      setBox(null);
-    }, 140);
+    closeTimer.current = window.setTimeout(() => setHover(false), 140);
   };
   const cancelClose = () => window.clearTimeout(closeTimer.current);
 
@@ -168,35 +168,72 @@ function TermAnchor({
     setBox({ top, left });
   }, [open]);
 
+  const dismiss = () => {
+    cancelClose();
+    setPinned(false);
+    setHover(false);
+  };
+
+  // pinned 期间：点击卡片/锚点以外任意处、滚动页面、窗口缩放 → 关闭
+  useEffect(() => {
+    if (!open) return;
+    const onPointerDown = (e: PointerEvent) => {
+      const t = e.target as Node | null;
+      if (anchorRef.current?.contains(t) || cardRef.current?.contains(t)) return;
+      setPinned(false);
+      setHover(false);
+    };
+    const onViewportChange = () => {
+      setPinned(false);
+      setHover(false);
+    };
+    document.addEventListener("pointerdown", onPointerDown, true);
+    window.addEventListener("resize", onViewportChange);
+    window.addEventListener("scroll", onViewportChange, true);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown, true);
+      window.removeEventListener("resize", onViewportChange);
+      window.removeEventListener("scroll", onViewportChange, true);
+    };
+  }, [open]);
+
   return (
     <>
       <Link
         ref={anchorRef}
         to={to}
         className={termAnchorCls}
+        aria-expanded={open}
         aria-describedby={open ? popId : undefined}
         onMouseEnter={() => {
           cancelClose();
-          setOpen(true);
+          setHover(true);
         }}
         onMouseLeave={closeSoon}
         onFocus={() => {
           cancelClose();
-          setOpen(true);
+          setHover(true);
         }}
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget as Node | null)) closeSoon();
         }}
         onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            cancelClose();
-            setOpen(false);
-            setBox(null);
-          }
+          if (e.key === "Escape") dismiss();
         }}
-        onClick={() => {
+        onClick={(e) => {
+          // 普通点击不跳转：固定/收起简介卡片（进完整条目走卡片内链接；
+          // Ctrl/Cmd/中键点击仍按浏览器默认在新标签打开术语页锚点）
+          if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+          e.preventDefault();
           cancelClose();
-          setOpen(false);
+          if (pinned) {
+            // 收起：必须同时清 hover，否则 open = hover || pinned 恒真
+            setPinned(false);
+            setHover(false);
+          } else {
+            setPinned(true);
+            setHover(true);
+          }
         }}
       >
         {children}

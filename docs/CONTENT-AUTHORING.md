@@ -197,7 +197,7 @@ export const lesson: Lesson = {
 **加粗**        *斜体*          ~~删除线~~        `行内代码`
 [文字](https://example.com)    外链（新窗口打开；http/https/mailto）
 [文字](/courses/gorm/lessons/x) 站内链接（不刷新页面）
-[文字](glossary:term-key)       术语引用（悬浮卡片 + 直达课程术语页锚点）
+[文字](glossary:term-key)       术语引用（悬浮/点击固定简介卡片，卡片内进术语页锚点）
 <https://example.com>           尖括号自动链接
 \* 转义                        行尾两个空格 + 换行 = 强制换行（其余换行折叠为空格）
 ```
