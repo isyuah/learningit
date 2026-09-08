@@ -1,14 +1,17 @@
 import { BookMarked } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMd } from "./inline-content";
 
 /** 术语条目：术语 + 定义，适合课程中的概念速查 */
 export function Definition({
   term,
   definition,
+  courseSlug,
   className,
 }: {
   term: string;
   definition: string;
+  courseSlug?: string;
   className?: string;
 }) {
   return (
@@ -27,7 +30,7 @@ export function Definition({
         <span className="break-all">{term}</span>
       </dt>
       <dd className="text-[0.9375rem] leading-relaxed text-ink-soft dark:text-night-soft">
-        {definition}
+        <InlineMd text={definition} courseSlug={courseSlug} />
       </dd>
     </dl>
   );

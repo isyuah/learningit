@@ -93,6 +93,13 @@ export interface Course {
  * 课时内容块（Lesson Block）：一节课由若干「块」按顺序组成。
  * 每个块对应页面上的一个教学组件。新增块类型时，在
  * src/components/learning/lesson-blocks.tsx 中注册渲染器即可。
+ *
+ * 叙事字段（paragraph.text、list.items、callout.body、quiz.question 等，
+ * 完整清单见 src/lib/inline-markdown.ts 的 MD_FIELDS）在渲染前经过
+ * 「行内 Markdown」解析：支持 **加粗**、`行内代码`、[文字](url) 链接；
+ * 其中 [文字](glossary:key) 是术语引用，会渲染为悬浮卡片并链接到
+ * 本课程的术语页。块级 Markdown（标题/列表/表格/代码围栏）一律用对应
+ * 的结构化块表达，npm run validate 会拦截混入叙事字段的块级记号。
  */
 export type LessonBlock =
   | { type: "paragraph"; text: string }
@@ -151,4 +158,31 @@ export interface Lesson {
   kind?: LessonKind;
   /** 课时正文：只允许出现在这里的内容块序列 */
   blocks: LessonBlock[];
+}
+
+/* ------------------------------------------------------------------ */
+
+/**
+ * 课程术语词条（可选，课程级）：整门课共享的「概念速查」。
+ * 定义在 src/content/courses/<slug>/glossary.ts，导出 glossary: GlossaryEntry[]。
+ * 叙事字段里用 [文字](glossary:key) 引用词条（key 即本表 key）：
+ * 悬浮显示 summary，点击/跳转到 /courses/<slug>/glossary#key。
+ *
+ * 术语选材建议：常用概念、容易遗忘的概念、正文中提前出现（先于正式
+ * 讲解）的概念、高频反复出现的概念。与课时块 definition（某节课内的
+ * 术语条）互不依赖，词条更强调「跨课时复用 + 复习」。
+ */
+export interface GlossaryEntry {
+  /** 词条 key：被 [x](glossary:key) 引用；须为小写字母数字连字符，课程内唯一 */
+  key: string;
+  /** 词条名（行内显示与术语页标题，保持简短，如「死信队列」） */
+  term: string;
+  /** 悬浮卡片一句话简介：应能在脱离上下文时独立读懂（1–2 句） */
+  summary: string;
+  /** 术语页完整讲解（可选）：复用叙事类块的子集 ——
+   *  paragraph / list / callout / code / table / quote；
+   *  detail 内的叙事文本同样支持行内 Markdown 与 glossary 引用。
+   *  其余块类型（quiz/exercise/video/keypoints/definition/heading 等）
+   *  不允许出现在 detail 中，npm run validate 会拦截。 */
+  detail?: LessonBlock[];
 }

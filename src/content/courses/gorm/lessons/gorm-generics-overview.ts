@@ -10,7 +10,7 @@ export const lesson: Lesson = {
   blocks: [
     {
       type: "paragraph",
-      text: "GORM 从 v1.30.0 起正式提供 Go 泛型 API。它不是另一个 ORM，也不是 GORM Gen 的别名：gorm.G[T](db) 仍然使用原来的模型解析、Clause、Callback、方言、插件和连接池，只是重新设计了调用表面，让结果类型、context 和错误流更符合现代 Go 代码的习惯。",
+      text: "GORM 从 v1.30.0 起正式提供 Go 泛型 API。它不是另一个 ORM，也不是 GORM Gen 的别名：gorm.G\\[T](db) 仍然使用原来的模型解析、Clause、Callback、方言、插件和连接池，只是重新设计了调用表面，让结果类型、context 和错误流更符合现代 Go 代码的习惯。",
     },
     {
       type: "heading",
@@ -54,7 +54,7 @@ user, err := gorm.G[User](db).
     },
     {
       type: "paragraph",
-      text: "T 同时决定默认模型和常见返回类型。gorm.G[User](db) 默认从 users 表查询，First 返回 User，Find 返回 []User，Create 接收 *User。它带来的是结果与模型层面的类型信息，并不意味着字符串形式的列名和 SQL 条件自动获得编译期检查；Where 中的拼写错误仍要到运行期才暴露。",
+      text: "T 同时决定默认模型和常见返回类型。gorm.G\\[User](db) 默认从 users 表查询，First 返回 User，Find 返回 []User，Create 接收 *User。它带来的是结果与模型层面的类型信息，并不意味着字符串形式的列名和 SQL 条件自动获得编译期检查；Where 中的拼写错误仍要到运行期才暴露。",
     },
     {
       type: "callout",
@@ -111,7 +111,7 @@ rows, err = gorm.G[User](db).
     },
     {
       type: "paragraph",
-      text: "迁移不需要大爆炸式重写。事务入口、Association Mode、Migrator 和部分插件仍常通过传统 *gorm.DB 使用，而事务内部的普通 CRUD 可以调用 gorm.G[T](tx)。同一个服务中可以让新仓储方法使用泛型 API，旧模块保留传统 API，等行为测试稳定后再逐个迁移。",
+      text: "迁移不需要大爆炸式重写。事务入口、Association Mode、Migrator 和部分插件仍常通过传统 *gorm.DB 使用，而事务内部的普通 CRUD 可以调用 gorm.G\\[T](tx)。同一个服务中可以让新仓储方法使用泛型 API，旧模块保留传统 API，等行为测试稳定后再逐个迁移。",
     },
     {
       type: "code",

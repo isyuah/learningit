@@ -5,6 +5,7 @@ import { SiteHeader } from "@/components/layout/site-header";
 import { HomePage } from "@/pages/home";
 import { CoursePage } from "@/pages/course";
 import { LessonPage } from "@/pages/lesson";
+import { GlossaryPage } from "@/pages/glossary";
 import { ComponentsPage } from "@/pages/components";
 import { GuidePage } from "@/pages/guide";
 import { NotFoundPage } from "@/pages/not-found";
@@ -41,6 +42,11 @@ function CoursePageRoute() {
   return <CoursePage courseSlug={courseSlug ?? ""} />;
 }
 
+function GlossaryPageRoute() {
+  const { courseSlug } = useParams();
+  return <GlossaryPage courseSlug={courseSlug ?? ""} />;
+}
+
 function LessonPageRoute() {
   const { courseSlug, lessonSlug } = useParams();
   return <LessonPage courseSlug={courseSlug ?? ""} lessonSlug={lessonSlug ?? ""} />;
@@ -52,6 +58,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/courses/:courseSlug" element={<CoursePageRoute />} />
+        <Route path="/courses/:courseSlug/glossary" element={<GlossaryPageRoute />} />
         <Route
           path="/courses/:courseSlug/lessons/:lessonSlug"
           element={<LessonPageRoute />}

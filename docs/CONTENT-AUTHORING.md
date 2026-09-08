@@ -174,9 +174,100 @@ export const lesson: Lesson = {
 
 一节课可以主要由正文和代码构成，也可以包含表格、练习、测验等。**不存在固定 block 数量或固定 block 类型配额。**
 
-## 5. 常用写作模式（不是固定模板）
+## 5. 行内 Markdown 与术语引用
 
-### 5.1 概念解释
+叙事字段在渲染前会经过**行内 Markdown** 解析（规则实现与校验共用 `src/lib/inline-markdown.ts`）。叙事字段指：
+
+| 块 | 支持行内 Markdown 的字段 | 保持纯文本的字段（出现记号会警告） |
+| --- | --- | --- |
+| `paragraph` | `text` | — |
+| `list` | `items` | — |
+| `callout` | `title`、`body` | — |
+| `table` | `rows`（单元格） | `caption`、`headers` |
+| `definition` | `definition` | `term` |
+| `keypoints` | `items` | — |
+| `quiz` | `question`、`options`、`explanation` | — |
+| `exercise` | `description`、`hint` | — |
+| `quote` | `text` | `source` |
+| `heading` / `subheading` | — | `text`（目录锚点） |
+
+### 支持语法
+
+```text
+**加粗**        *斜体*          ~~删除线~~        `行内代码`
+[文字](https://example.com)    外链（新窗口打开；http/https/mailto）
+[文字](/courses/gorm/lessons/x) 站内链接（不刷新页面）
+[文字](glossary:term-key)       术语引用（悬浮卡片 + 直达课程术语页锚点）
+<https://example.com>           尖括号自动链接
+\* 转义                        行尾两个空格 + 换行 = 强制换行（其余换行折叠为空格）
+```
+
+- 链接 scheme 白名单：`http:` / `https:` / `mailto:` / 站内 `/` 路径 / `glossary:`。
+  其余 scheme（如 `javascript:`、本地盘符路径）validate 会报错。
+- 图片语法 `![…](…)` 平台不支持（无图片能力），validate 报错，请用文字描述。
+- 想字面显示记号时用反斜杠转义：`\*不是斜体\*`。转义后 validate 不会误报。
+
+### 禁止：块级 Markdown
+
+叙事字段**不支持块级 Markdown**——标题、列表、表格、代码围栏、引用、分隔线
+一律用对应结构化块（heading/list/table/code/quote/divider）表达，否则 validate
+报错并引导改写：
+
+```text
+# 标题            → heading / subheading 块
+- 列表 / 1. 列表  → list 块
+```代码围栏```     → code 块（Shiki 高亮 + 复制按钮）
+| 表格 |          → table 块（支持 caption）
+> 引用            → quote 块
+---               → divider 块
+```
+
+`npm run validate` 会检查：叙事字段是否混入块级记号、链接 scheme 是否在白名单内、
+术语引用 key 是否存在于本课程 glossary.ts。
+
+### 课程术语表（glossary.ts，可选但推荐）
+
+整门课共享的概念（**容易遗忘、正文中提前出现、高频反复出现**的术语）收进课程级术语表：
+
+```text
+src/content/courses/gorm/
+├── course.ts
+├── glossary.ts          # ← 术语表（可选）
+└── lessons/…
+```
+
+```ts
+// glossary.ts
+import type { GlossaryEntry } from "../../types";
+
+export const glossary: GlossaryEntry[] = [
+  {
+    key: "auto-migrate",
+    term: "AutoMigrate",
+    summary: "按传入的 model 结构体自动创建缺失的表/列/索引的迁移入口；适合开发期，不能代替生产迁移。",
+    detail: [
+      {
+        type: "paragraph",
+        text: "detail 复用叙事类块（paragraph/list/callout/code/table/quote），支持行内 Markdown 与术语引用。",
+      },
+    ],
+  },
+];
+```
+
+- 正文引用：`AutoMigrate 可以这样用：[AutoMigrate](glossary:auto-migrate) 的边界是…`
+- 词条 key：小写字母/数字/连字符，课程内唯一；`term` 行内显示、`summary` 悬浮卡片
+  文案（要能脱离上下文独立读懂）、`detail` 术语页完整讲解（可选）。
+- 术语页自动生成在 `/courses/<course-slug>/glossary`，词条按**首次被正文引用的课时**
+  排序，未引用词条跟在后面（validate 会警告零引用，提前建档是合法的）。
+- validate 检查：key 格式与重复、term/summary 必填、detail 块类型白名单、
+  引用 key 是否存在、无 glossary.ts 时禁止出现术语引用。
+
+与块 `definition`（某节课内的术语条）互不依赖；课程术语强调跨课时复用与复习。
+
+## 6. 常用写作模式（不是固定模板）
+
+### 6.1 概念解释
 
 ```text
 问题 / 场景
@@ -188,7 +279,7 @@ export const lesson: Lesson = {
 → 与下一知识点的连接
 ```
 
-### 5.2 API / 框架能力
+### 6.2 API / 框架能力
 
 ```text
 什么时候需要
@@ -199,7 +290,7 @@ export const lesson: Lesson = {
 → 实际工程提醒
 ```
 
-### 5.3 工程问题
+### 6.3 工程问题
 
 ```text
 症状 / 需求
@@ -213,7 +304,7 @@ export const lesson: Lesson = {
 
 这些模式仅帮助作者组织信息；如果主题不适合，应采用更自然的结构。
 
-## 6. Quiz 与 Exercise
+## 7. Quiz 与 Exercise
 
 Quiz：
 
@@ -243,7 +334,7 @@ Exercise：
 
 练习应要求学习者做出实际判断或操作；如果没有练习价值，可以不使用。
 
-## 7. 占位课时与课程渐进生产
+## 8. 占位课时与课程渐进生产
 
 允许先在 `course.ts` 写完整大纲，再逐步创建 lesson 文件。
 
@@ -256,7 +347,7 @@ Exercise：
 
 `npm run validate` 会对“大纲存在但没有课时文件”给出警告。该警告可以是正常状态，但 Reviewer 应确认是否符合当前计划。
 
-## 8. 多 Agent 写入建议
+## 9. 多 Agent 写入建议
 
 平台层面的所有权规则见 `docs/AGENTS.md`。简要约定：
 
@@ -265,7 +356,7 @@ Exercise：
 - Author 发现大纲问题时提出修改建议，不直接与其他 Author 争抢 `course.ts`。
 - Reviewer / Integrator 最终检查课程整体一致性并执行验证。
 
-## 9. 平台能力缺口
+## 10. 平台能力缺口
 
 如果课程确实需要当前平台没有的表达方式，例如专门的架构图、代码 Diff、交互 Playground：
 
@@ -274,7 +365,7 @@ Exercise：
 3. 把它作为独立的 **Platform Capability Gap** 交给平台任务处理。
 4. 平台扩展完成后，再让课程使用新 block。
 
-## 10. 校验
+## 11. 校验
 
 内容生产后：
 
@@ -298,7 +389,7 @@ npm run build
 - `quiz.answer` 越界；
 - 课时文件存在但没有被大纲收录。
 
-## 11. 上线前内容检查
+## 12. 上线前内容检查
 
 - [ ] 课程目标与用户要求一致。
 - [ ] 已完成课时不是只有标题、简介或宣传文案。
@@ -310,7 +401,7 @@ npm run build
 - [ ] `npm run validate` 无错误。
 - [ ] `npm run build` 通过。
 
-## 12. 让 AI 创作课程
+## 13. 让 AI 创作课程
 
 如果环境安装了课程创作 Skill，优先让 Skill 负责：
 

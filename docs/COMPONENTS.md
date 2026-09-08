@@ -175,6 +175,22 @@ push({ tone: "success", title: "已保存", description: "进度已记录" });
 - 换主题：编辑 `src/lib/highlight.ts` 里的 `THEME` 常量（主题列表见
   `node_modules/@shikijs/themes`）。
 
+### 行内 Markdown 与术语 — `learning/inline-content.tsx` + `pages/glossary.tsx`
+
+叙事字段（paragraph/list/callout/quiz/exercise/keypoints/definition/quote/table 单元格）
+渲染前经行内 Markdown 解析（`lib/inline-markdown.ts`，纯函数，校验器共用）：
+
+- `**加粗**`、`*斜体*`、`~~删除线~~`、`` `行内代码` ``、链接
+  （外链 `[x](https://…)`、站内 `[x](/courses/…)`、尖括号自动链接）。
+- `[文字](glossary:key)` = **术语引用**：虚线下划线样式；悬停/聚焦弹出卡片
+  （词条 `summary`），点击直达 `/courses/<slug>/glossary#<key>`；移动端点击直接跳转。
+- 词条数据 = 课程目录下 `glossary.ts`（`glossary: GlossaryEntry[]`，
+  `key/term/summary/detail`），示例与字段表见 `src/content/courses/gorm/glossary.ts`。
+- 术语页路由 `/courses/:courseSlug/glossary`：词条按首次被正文引用的课时排序，
+  顶部 chip 导航，每词条带锚点；课程页大纲区有入口按钮。
+- 块级 Markdown（标题/列表/表格/代码围栏）**不在**叙事字段内解析，用结构化块；
+  语法白名单与校验行为见 `docs/CONTENT-AUTHORING.md` 第 5 节。
+
 ### 课程导航类 — `learning/course-card.tsx`、`lesson-list.tsx`、`lesson-nav.tsx`
 
 ```tsx

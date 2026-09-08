@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { FlaskConical, Info, Lightbulb, TriangleAlert } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMd } from "./inline-content";
 
 export type CalloutVariant = "tip" | "note" | "warning" | "example";
 
@@ -42,14 +43,23 @@ export function Callout({
   variant = "note",
   title,
   children,
+  courseSlug,
   className,
 }: {
   variant?: CalloutVariant;
   title?: string;
   children: ReactNode;
+  /** 课程 slug：字符串正文启用行内 Markdown 与术语引用时传入 */
+  courseSlug?: string;
   className?: string;
 }) {
   const { icon: Icon, panel, label } = config[variant];
+  const body =
+    typeof children === "string" ? (
+      <InlineMd text={children} courseSlug={courseSlug} />
+    ) : (
+      children
+    );
   return (
     <aside
       className={cn(
@@ -64,9 +74,9 @@ export function Callout({
       />
       <div className="min-w-0">
         <p className="mb-1 text-xs font-semibold tracking-wide text-ink-soft uppercase dark:text-night-soft">
-          {title ?? label}
+          {title ? <InlineMd text={title} courseSlug={courseSlug} /> : label}
         </p>
-        <div className="text-ink dark:text-night-ink">{children}</div>
+        <div className="text-ink dark:text-night-ink">{body}</div>
       </div>
     </aside>
   );

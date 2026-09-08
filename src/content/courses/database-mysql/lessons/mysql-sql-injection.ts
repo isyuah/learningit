@@ -46,7 +46,7 @@ export const lesson: Lesson = {
       "type": "callout",
       "variant": "warning",
       "title": "注入的三种典型后果",
-      "body": "1) 认证绕过：把 WHERE 条件改写成永远为真，直接以他人身份登录；2) 数据泄露：通过 UNION SELECT 把别的表的数据带出来；3) 破坏性：直接 UPDATE / DELETE / DROP 数据。攻击面有多大，取决于该数据库连接的权限有多大——这正是后面「最小权限」的意义所在。"
+      "body": "1\\) 认证绕过：把 WHERE 条件改写成永远为真，直接以他人身份登录；2) 数据泄露：通过 UNION SELECT 把别的表的数据带出来；3) 破坏性：直接 UPDATE / DELETE / DROP 数据。攻击面有多大，取决于该数据库连接的权限有多大——这正是后面「最小权限」的意义所在。"
     },
     {
       "type": "heading",

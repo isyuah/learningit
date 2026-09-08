@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, CalendarDays, CheckCircle2, Clock3, Layers, Users } from "lucide-react";
-import { flattenLessons, getCourse } from "@/content/courses";
+import { ArrowRight, BookMarked, CalendarDays, CheckCircle2, Clock3, Layers, Users } from "lucide-react";
+import { flattenLessons, getCourse, getGlossary } from "@/content/courses";
 import { LEVEL_LABEL } from "@/content/types";
 import { useProgress } from "@/lib/progress";
 import { cn } from "@/lib/utils";
@@ -106,13 +106,25 @@ export function CoursePage({ courseSlug }: { courseSlug: string }) {
           )}
 
           <section aria-label="课程大纲" className="scroll-mt-24">
-            <div className="mb-4 flex items-baseline justify-between gap-4">
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-ink dark:text-night-ink">
                 课程大纲
               </h2>
-              <span className="text-xs text-ink-faint dark:text-night-faint">
-                已完成 {done} / {total}
-              </span>
+              <div className="flex items-center gap-3">
+                {getGlossary(course.slug) && (
+                  <LinkButton
+                    to={`/courses/${course.slug}/glossary`}
+                    variant="soft"
+                    size="sm"
+                    icon={<BookMarked aria-hidden className="size-3.5" />}
+                  >
+                    术语表 · {getGlossary(course.slug)!.length}
+                  </LinkButton>
+                )}
+                <span className="text-xs text-ink-faint dark:text-night-faint">
+                  已完成 {done} / {total}
+                </span>
+              </div>
             </div>
             <LessonList course={course} completed={completed} />
             <p className="mt-6 rounded-md border border-dashed border-line-strong px-4 py-3 text-xs leading-relaxed text-ink-faint dark:border-night-line-strong dark:text-night-faint">

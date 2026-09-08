@@ -16,7 +16,7 @@ export const lesson: Lesson = {
   "blocks": [
     {
       "type": "paragraph",
-      "text": "删除在 GORM 里有一个隐藏的分水岭：你的模型是否包含 gorm.DeletedAt 字段，直接决定 db.Delete 是「物理删除」还是「软删除」。这个判断是 GORM 替你做的——它像开关一样切换两种完全不同的行为。不搞清楚规则，你会困惑为什么删了还在、为什么查不到、为什么 Unscoped 突然出现了。"
+      "text": "删除在 GORM 里有一个隐藏的分水岭：你的模型是否包含 gorm.DeletedAt 字段，直接决定 db.Delete 是「物理删除」还是「[软删除](glossary:soft-delete)」。这个判断是 GORM 替你做的——它像开关一样切换两种完全不同的行为。不搞清楚规则，你会困惑为什么删了还在、为什么查不到、为什么 Unscoped 突然出现了。"
     },
     {
       "type": "heading",

@@ -4,6 +4,7 @@ import { Callout } from "./callout";
 import { CodeBlock } from "./code-block";
 import { Definition } from "./definition";
 import { Exercise } from "./exercise";
+import { InlineMd } from "./inline-content";
 import { KeyPoints } from "./key-points";
 import { Quiz } from "./quiz";
 import { VideoEmbed } from "./video-embed";
@@ -28,9 +29,12 @@ function slugifyHeading(text: string, fallback: number): string {
 
 export function LessonBlocks({
   blocks,
+  courseSlug,
   className,
 }: {
   blocks: LessonBlock[];
+  /** 所属课程 slug：叙事字段据此解析术语引用（悬浮卡片/术语页链接） */
+  courseSlug?: string;
   className?: string;
 }) {
   let headingCount = 0;
@@ -45,7 +49,7 @@ export function LessonBlocks({
                 key={i}
                 className="text-[1.02rem] leading-8 text-ink dark:text-night-ink"
               >
-                {block.text}
+                <InlineMd text={block.text} courseSlug={courseSlug} />
               </p>
             );
 
@@ -84,7 +88,9 @@ export function LessonBlocks({
                 className="list-decimal space-y-1.5 pl-6 text-[1.02rem] leading-8 text-ink marker:text-primary-600 dark:text-night-ink"
               >
                 {block.items.map((item, j) => (
-                  <li key={j}>{item}</li>
+                  <li key={j}>
+                    <InlineMd text={item} courseSlug={courseSlug} />
+                  </li>
                 ))}
               </ol>
             ) : (
@@ -93,7 +99,9 @@ export function LessonBlocks({
                 className="list-disc space-y-1.5 pl-6 text-[1.02rem] leading-8 text-ink marker:text-primary-600 dark:text-night-ink"
               >
                 {block.items.map((item, j) => (
-                  <li key={j}>{item}</li>
+                  <li key={j}>
+                    <InlineMd text={item} courseSlug={courseSlug} />
+                  </li>
                 ))}
               </ul>
             );
@@ -104,6 +112,7 @@ export function LessonBlocks({
                 key={i}
                 variant={block.variant}
                 title={block.title}
+                courseSlug={courseSlug}
               >
                 {block.body}
               </Callout>
@@ -152,7 +161,7 @@ export function LessonBlocks({
                             key={c}
                             className="px-4 py-2.5 leading-relaxed text-ink-soft dark:text-night-soft"
                           >
-                            {cell}
+                            <InlineMd text={cell} courseSlug={courseSlug} />
                           </td>
                         ))}
                       </tr>
@@ -168,11 +177,12 @@ export function LessonBlocks({
                 key={i}
                 term={block.term}
                 definition={block.definition}
+                courseSlug={courseSlug}
               />
             );
 
           case "keypoints":
-            return <KeyPoints key={i} items={block.items} />;
+            return <KeyPoints key={i} items={block.items} courseSlug={courseSlug} />;
 
           case "quiz":
             return (
@@ -182,6 +192,7 @@ export function LessonBlocks({
                 options={block.options}
                 answer={block.answer}
                 explanation={block.explanation}
+                courseSlug={courseSlug}
               />
             );
 
@@ -192,6 +203,7 @@ export function LessonBlocks({
                 title={block.title}
                 description={block.description}
                 hint={block.hint}
+                courseSlug={courseSlug}
               />
             );
 
@@ -212,7 +224,7 @@ export function LessonBlocks({
                 key={i}
                 className="border-l-2 border-amber-400 py-1 pl-5 font-display text-lg leading-relaxed text-ink-soft italic dark:border-amber-500 dark:text-night-soft"
               >
-                {block.text}
+                <InlineMd text={block.text} courseSlug={courseSlug} />
                 {block.source && (
                   <footer className="mt-1.5 text-sm not-italic text-ink-faint dark:text-night-faint">
                     —— {block.source}

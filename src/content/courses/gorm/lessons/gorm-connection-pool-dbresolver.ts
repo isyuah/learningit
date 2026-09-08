@@ -10,7 +10,7 @@ export const lesson: Lesson = {
   blocks: [
     {
       type: "paragraph",
-      text: "*gorm.DB 不是一条连接。常规配置下，它把操作交给 database/sql 连接池；事务会从池里占用一条连接直到结束。连接池太小会排队，太大则可能把数据库压垮。DBResolver 在此基础上增加 source/replica 路由，但它不能消除复制延迟和读己之写问题。",
+      text: "*gorm.DB 不是一条连接。常规配置下，它把操作交给 database/sql 连接池；事务会从池里占用一条连接直到结束。连接池太小会排队，太大则可能把数据库压垮。[DBResolver](glossary:dbresolver) 在此基础上增加 source/replica 路由，但它不能消除复制延迟和读己之写问题。",
     },
     {
       type: "heading",

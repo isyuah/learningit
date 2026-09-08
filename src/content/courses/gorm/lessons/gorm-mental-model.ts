@@ -50,7 +50,7 @@ export const lesson: Lesson = {
     },
     {
       type: "paragraph",
-      text: "GORM（Go Object-Relational Mapping）是 Go 生态中最流行的 ORM 库。它做的事情从本质上说只有一件：在「Go 结构体」和「数据库表」之间做双向翻译。",
+      text: "GORM（Go Object-Relational Mapping）是 Go 生态中最流行的 [ORM](glossary:orm) 库。它做的事情从本质上说只有一件：在「Go 结构体」和「数据库表」之间做双向翻译。",
     },
     {
       type: "list",

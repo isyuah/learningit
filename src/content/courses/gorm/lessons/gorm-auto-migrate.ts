@@ -10,7 +10,7 @@ export const lesson: Lesson = {
   blocks: [
     {
       type: "paragraph",
-      text: "AutoMigrate 适合快速建立开发 schema，但不能代替生产迁移流程。正确的学习目标不是记住“能不能迁移”四个字，而是能回答：这次模型变化会生成什么 DDL，是否会锁表或改写数据，失败后如何恢复，以及谁在部署前审查它。",
+      text: "[AutoMigrate](glossary:auto-migrate) 适合快速建立开发 schema，但不能代替生产迁移流程。正确的学习目标不是记住“能不能迁移”四个字，而是能回答：这次模型变化会生成什么 DDL，是否会锁表或改写数据，失败后如何恢复，以及谁在部署前审查它。",
     },
     {
       type: "heading",

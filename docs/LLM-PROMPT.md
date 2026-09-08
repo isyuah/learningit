@@ -72,6 +72,25 @@
 - quiz：主动回忆或理解辨析真正有价值时使用
 - exercise：学习者需要实际完成任务时使用
 
+## 行内 Markdown 与术语引用（新内容按此写）
+
+叙事字段（paragraph.text、list.items、callout.title/body、quote.text、
+exercise.description/hint、quiz.question/options/explanation、keypoints.items、
+definition.definition、table.rows 单元格）渲染前会做**行内 Markdown** 解析，
+规则见 docs/CONTENT-AUTHORING.md 第 5 节，要点：
+
+- 支持：`**加粗**`、`*斜体*`、`~~删除线~~`、`` `行内代码` ``、
+  `[文字](https://…)` 外链、`[文字](/courses/…)` 站内链、`<https://…>` 自动链接、
+  `[文字](glossary:key)` 术语引用、`\*` 转义。
+- **禁止**在叙事字段里写块级 Markdown（`# 标题`、`- 列表`、`1. 序号`、表格、
+  ``` 代码围栏、`> 引用`、`---`、`![图片](…)`）——一律用对应的结构化块；
+  `npm run validate` 会报错。
+- heading/subheading/summary/table 表头/definition.term 等纯文本字段不做
+  Markdown 渲染，不要在里面写记号。
+- 术语引用前，先在课程目录建 `glossary.ts` 定义词条（key/term/summary/可选
+  detail），再在正文写 `[显示文字](glossary:key)`；易遗忘、提前出现、高频的
+  概念适合收进术语表。校验会检查 key 是否存在。
+
 ## 写入约束
 
 严格遵守平台类型，不发明字段。

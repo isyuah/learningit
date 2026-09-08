@@ -26,6 +26,7 @@
 ```text
 src/content/courses/<course-slug>/
 ├── course.ts
+├── glossary.ts          # 课程术语表（可选，见 §5.1）
 └── lessons/
     ├── <lesson-slug>.ts
     └── ...
@@ -33,6 +34,8 @@ src/content/courses/<course-slug>/
 
 - `course.ts` 必须导出 `course: Course`。
 - `lessons/*.ts` 每个文件必须导出 `lesson: Lesson`。
+- `glossary.ts`（可选）必须导出 `glossary: GlossaryEntry[]`；存在时自动生成
+  课程术语页 `/courses/<course-slug>/glossary`。
 - 新课程和新课时由 `import.meta.glob` 自动发现，不需要修改 `src/content/courses/index.ts`。
 - 推荐用 `npm run scaffold:course -- --slug <slug> --title "..."` 创建课程骨架。
 
@@ -114,6 +117,22 @@ basics
 不要为了课程需要而在数据中发明未定义的 block 字段或 block 类型。
 
 如果现有 block 无法清晰表达某类学习内容，应把它记录为 **Platform Capability Gap**。只有在任务明确包含平台扩展时，才修改平台类型和渲染器。
+
+### 5.1 叙事字段的行内 Markdown 与术语引用
+
+部分 block 字段在渲染前会做**行内 Markdown** 解析（哪些字段、支持哪些语法、
+哪些被禁止，见 `docs/CONTENT-AUTHORING.md` 第 5 节；实现见
+`src/lib/inline-markdown.ts`，校验与渲染共用同一份规则）：
+
+- 支持：加粗 / 斜体 / 删除线 / 行内代码 / 链接 / 转义；链接 scheme 白名单为
+  `http` `https` `mailto`、站内 `/` 路径、`glossary:` 术语引用。
+- 块级 Markdown 记号在叙事字段中被校验器判为错误（应改用对应结构化块）。
+- 纯文本字段（heading/subheading/summary/table 表头/definition.term 等）
+  不做 Markdown 渲染，出现记号会给出警告。
+- 课程术语表 `glossary.ts`：`GlossaryEntry[]`（key/term/summary/可选 detail）；
+  `glossary:key` 引用必须能解析到本课程的词条；词条 key 需课程内唯一；
+  detail 只允许叙事类块子集（paragraph/list/callout/code/table/quote）。
+  以上均由 `npm run validate` 检查。
 
 ## 6. Quiz 约束
 

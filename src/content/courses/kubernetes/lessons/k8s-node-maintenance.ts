@@ -106,7 +106,7 @@ spec:
       title: "给 shop-api 配 PDB，然后安全排空一个 worker",
       description: `在 3 节点 kind 集群 k8s-course 上完成一次完整的节点维护演练：
 
-1. 准备：确认集群有 1 个控制面和 2 个 worker（kubectl get nodes 看 NAME/STATUS），如还没有 shop 命名空间则 kubectl create namespace shop。若前面章节已部署过 shop-api，把它缩放到 2 副本（kubectl scale deployment shop-api -n shop --replicas=2）；若集群里还没有 shop-api，用下面的清单创建：
+1\\. 准备：确认集群有 1 个控制面和 2 个 worker（kubectl get nodes 看 NAME/STATUS），如还没有 shop 命名空间则 kubectl create namespace shop。若前面章节已部署过 shop-api，把它缩放到 2 副本（kubectl scale deployment shop-api -n shop --replicas=2）；若集群里还没有 shop-api，用下面的清单创建：
 
 apiVersion: apps/v1
 kind: Deployment
@@ -130,13 +130,13 @@ spec:
             - containerPort: 8080
 
    注意：排空会迁移节点上的所有工作负载。若某些负载使用了绑定节点本地目录的卷（第 6 章静态供给练习里的 hostPath PV Pod），它们被排空后可能因卷绑定的节点而无法在其他节点重建——为聚焦本课主题，优先选择没有这类负载的 worker 做排空对象；若无法避开，可把本次演练放到临时命名空间（练习可临时用 default）里只跑 shop-api 与 PDB。
-2. 把正文中的 PDB 清单保存为 shop-api-pdb.yaml 并执行 kubectl apply -f shop-api-pdb.yaml，然后 kubectl get pdb -n shop：预期看到 ALLOWED DISRUPTIONS 为 0——2 个健康副本刚好满足 minAvailable=2，一个都不让动。
-3. 用 kubectl get pods -n shop -o wide 确认副本分布（大概率两个 worker 各一个；若两个副本恰好挤在同一节点，就选那个节点做排空对象）。
-4. 对运行着 shop-api 副本的 worker 执行 kubectl cordon <节点>，再用 kubectl get nodes 确认它出现不可调度特征。
-5. 执行 kubectl drain <节点> --ignore-daemonsets --delete-emptydir-data：预期 drain 卡住并反复提示驱逐会违反中断预算（cannot evict ... disruption budget）。这就是 PDB 在起作用。
-6. 解除僵局：另开终端 kubectl scale deployment shop-api -n shop --replicas=3，新副本会被调度到未冻结的 worker；等它就绪后 drain 自动继续，把冻结节点上的旧副本逐个排空。体会「PDB 把排空变成串行、每一步都等新副本就绪」。
-7. kubectl uncordon <节点>，确认节点恢复可调度；最后 kubectl get pods -o wide 观察副本如何重新分布。
-8. 复盘两个问题：为什么 drain 需要 --ignore-daemonsets？如果这一步没有 PDB，直接 drain 会发生什么？`,
+2\\. 把正文中的 PDB 清单保存为 shop-api-pdb.yaml 并执行 kubectl apply -f shop-api-pdb.yaml，然后 kubectl get pdb -n shop：预期看到 ALLOWED DISRUPTIONS 为 0——2 个健康副本刚好满足 minAvailable=2，一个都不让动。
+3\\. 用 kubectl get pods -n shop -o wide 确认副本分布（大概率两个 worker 各一个；若两个副本恰好挤在同一节点，就选那个节点做排空对象）。
+4\\. 对运行着 shop-api 副本的 worker 执行 kubectl cordon <节点>，再用 kubectl get nodes 确认它出现不可调度特征。
+5\\. 执行 kubectl drain <节点> --ignore-daemonsets --delete-emptydir-data：预期 drain 卡住并反复提示驱逐会违反中断预算（cannot evict ... disruption budget）。这就是 PDB 在起作用。
+6\\. 解除僵局：另开终端 kubectl scale deployment shop-api -n shop --replicas=3，新副本会被调度到未冻结的 worker；等它就绪后 drain 自动继续，把冻结节点上的旧副本逐个排空。体会「PDB 把排空变成串行、每一步都等新副本就绪」。
+7\\. kubectl uncordon <节点>，确认节点恢复可调度；最后 kubectl get pods -o wide 观察副本如何重新分布。
+8\\. 复盘两个问题：为什么 drain 需要 --ignore-daemonsets？如果这一步没有 PDB，直接 drain 会发生什么？`,
       hint: "先想清楚 PDB 的 ALLOWED DISRUPTIONS 为 0 意味着什么，再动手；排空卡住是预期行为，不是命令出错。解除僵局的两个可选方向（加副本 / 临时调低 minAvailable）分别对应「扩容保可用」与「接受短暂降级」两种运维选择。",
     },
     {

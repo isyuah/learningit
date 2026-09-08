@@ -103,7 +103,7 @@ export const lesson: Lesson = {
       "type": "keypoints",
       "items": [
         "SELECT 列名 FROM 表名 是查询的基本骨架",
-        "* 表示所有列；列的顺序由 SELECT 决定",
+        "\\* 表示所有列；列的顺序由 SELECT 决定",
         "每条语句以分号结尾"
       ]
     }

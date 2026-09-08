@@ -7,9 +7,9 @@
  * 新课程/新课时只要把文件放进对应目录即自动生效，无需修改本文件。
  * 相关命令：npm run validate（校验）、npm run scaffold:course（新建课程）
  * ================================================================== */
-import type { Course, Lesson, LessonMeta } from "../types";
+import type { Course, GlossaryEntry, Lesson, LessonMeta } from "../types";
 
-export type { Course, Lesson, LessonMeta } from "../types";
+export type { Course, GlossaryEntry, Lesson, LessonMeta } from "../types";
 
 const courseModules = import.meta.glob<{ course: Course }>("./*/course.ts", {
   eager: true,
@@ -17,6 +17,10 @@ const courseModules = import.meta.glob<{ course: Course }>("./*/course.ts", {
 const lessonModules = import.meta.glob<{ lesson: Lesson }>("./*/lessons/*.ts", {
   eager: true,
 });
+const glossaryModules = import.meta.glob<{ glossary: GlossaryEntry[] }>(
+  "./*/glossary.ts",
+  { eager: true },
+);
 
 /** 课程排序：coverIndex 数字优先，非数字兜底按字母序，保证稳定可预期 */
 export type CourseSort = "default" | "newest" | "oldest";
@@ -70,6 +74,16 @@ export function getCourse(slug: string): Course | undefined {
  */
 export function getLesson(fileSlug: string): Lesson | undefined {
   return lessons[fileSlug];
+}
+
+/**
+ * 取课程的术语表（glossary.ts 的词条数组，按文件内顺序）；
+ * 课程未建术语表时返回 undefined。词条按首次被引用的课时排序、
+ * 未引用词条统计等查询见 pages/glossary.tsx。
+ */
+export function getGlossary(courseSlug: string): GlossaryEntry[] | undefined {
+  const mod = glossaryModules[`./${courseSlug}/glossary.ts`];
+  return mod?.glossary;
 }
 
 /**

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CheckCircle2, HelpCircle, RotateCcw, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMd } from "./inline-content";
 
 /**
  * 交互式测验：选择题 + 即时反馈 + 讲解。
@@ -11,6 +12,7 @@ export function Quiz({
   options,
   answer,
   explanation,
+  courseSlug,
   className,
 }: {
   question: string;
@@ -18,6 +20,7 @@ export function Quiz({
   /** 正确答案下标（0 起） */
   answer: number;
   explanation: string;
+  courseSlug?: string;
   className?: string;
 }) {
   const [selected, setSelected] = useState<number | null>(null);
@@ -47,7 +50,7 @@ export function Quiz({
       </header>
       <div className="px-5 py-4">
         <p className="mb-4 font-medium leading-relaxed text-ink dark:text-night-ink">
-          {question}
+          <InlineMd text={question} courseSlug={courseSlug} />
         </p>
         <div role="radiogroup" aria-label="选项" className="space-y-2.5">
           {options.map((opt, i) => {
@@ -97,7 +100,9 @@ export function Quiz({
                     letter
                   )}
                 </span>
-                <span className="text-ink dark:text-night-ink">{opt}</span>
+                <span className="text-ink dark:text-night-ink">
+                  <InlineMd text={opt} courseSlug={courseSlug} />
+                </span>
               </label>
             );
           })}
@@ -139,7 +144,7 @@ export function Quiz({
               )}
             </p>
             <p className="mt-1.5 text-sm leading-relaxed text-ink-soft dark:text-night-soft">
-              {explanation}
+              <InlineMd text={explanation} courseSlug={courseSlug} />
             </p>
             <button
               type="button"

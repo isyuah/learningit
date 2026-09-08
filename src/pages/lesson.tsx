@@ -204,7 +204,7 @@ export function LessonPage({
               />
             ) : lesson ? (
               <>
-                <LessonBlocks blocks={lesson.blocks} />
+                <LessonBlocks blocks={lesson.blocks} courseSlug={course.slug} />
 
                 {/* 标记完成 */}
                 <div className="flex items-center justify-between gap-4 rounded-lg border border-line bg-surface px-5 py-4 dark:border-night-line dark:bg-night-surface">

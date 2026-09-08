@@ -10,7 +10,7 @@ export const lesson: Lesson = {
   "slug": "nyauth-architecture-map",
   "courseSlug": "nyauth-backend",
   "title": "进程启动与模块关系",
-  "summary": "顺着 `nyauth serve` 的启动路径走一遍，弄清 migrate 与 serve 的分工、模块之间的依赖关系，以及路由与能力开关如何分区。",
+  "summary": "顺着 nyauth serve 的启动路径走一遍，弄清 migrate 与 serve 的分工、模块之间的依赖关系，以及路由与能力开关如何分区。",
   "minutes": 20,
   "kind": "reading",
   "blocks": [
@@ -24,7 +24,7 @@ export const lesson: Lesson = {
     },
     {
       "type": "paragraph",
-      "text": "Nyauth 的命令行入口是 `nyauth serve`（还有 `migrate`、`maintenance`、`healthcheck` 等兄弟命令）。启动不是「读个配置就监听端口」，而是一个有严格顺序的初始化流程：每一步都为下一步准备好了依赖。入口在 [`cmd/nyauth/main.go`](E:/Proj/nya/cmd/nyauth/main.go) 的 `main`，服务装配在 [`server.New`](E:/Proj/nya/internal/server/server.go) 与 `Server.Run`。"
+      "text": "Nyauth 的命令行入口是 `nyauth serve`（还有 `migrate`、`maintenance`、`healthcheck` 等兄弟命令）。启动不是「读个配置就监听端口」，而是一个有严格顺序的初始化流程：每一步都为下一步准备好了依赖。入口在 `cmd/nyauth/main.go` 的 `main`，服务装配在 `server.New` 与 `Server.Run`。"
     },
     {
       "type": "code",

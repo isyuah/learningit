@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, PencilLine } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMd } from "./inline-content";
 
 /**
  * 练习卡：给出任务与（可选的）提示，提示默认折叠，鼓励先独立思考。
@@ -9,11 +10,13 @@ export function Exercise({
   title,
   description,
   hint,
+  courseSlug,
   className,
 }: {
   title: string;
   description: string;
   hint?: string;
+  courseSlug?: string;
   className?: string;
 }) {
   const [showHint, setShowHint] = useState(false);
@@ -32,7 +35,7 @@ export function Exercise({
         练习 · {title}
       </h4>
       <p className="text-[0.9375rem] leading-relaxed text-ink dark:text-night-ink">
-        {description}
+        <InlineMd text={description} courseSlug={courseSlug} />
       </p>
       {hint && (
         <div className="mt-3">
@@ -53,7 +56,7 @@ export function Exercise({
           </button>
           {showHint && (
             <p className="mt-2 rounded bg-surface px-3.5 py-2.5 text-sm leading-relaxed text-ink-soft dark:bg-night-surface dark:text-night-soft">
-              {hint}
+              <InlineMd text={hint} courseSlug={courseSlug} />
             </p>
           )}
         </div>

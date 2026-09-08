@@ -1,12 +1,15 @@
 import { Check, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { InlineMd } from "./inline-content";
 
 /** 本课要点：讲解前先声明学习目标，讲解后总结核心结论 */
 export function KeyPoints({
   items,
+  courseSlug,
   className,
 }: {
   items: string[];
+  courseSlug?: string;
   className?: string;
 }) {
   return (
@@ -32,7 +35,7 @@ export function KeyPoints({
               aria-hidden
               className="mt-1 size-4 shrink-0 text-primary-600 dark:text-primary-400"
             />
-            {item}
+            <InlineMd text={item} courseSlug={courseSlug} />
           </li>
         ))}
       </ul>
